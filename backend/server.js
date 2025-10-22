@@ -18,9 +18,17 @@ app.use(helmet());
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL 
-    ? [process.env.FRONTEND_URL, 'http://localhost:5173']
-    : ['http://localhost:5173'],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost and any vercel.app subdomain
+    if (origin.includes('localhost') || origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
   methods: ['GET', 'POST'],
   credentials: true,
   optionsSuccessStatus: 200
