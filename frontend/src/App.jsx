@@ -11,6 +11,7 @@ function App() {
   const [eligibilityData, setEligibilityData] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [checkingEligibility, setCheckingEligibility] = useState(false);
+  const [lastTransaction, setLastTransaction] = useState(null);
 
   // Check eligibility when wallet address is valid
   useEffect(() => {
@@ -80,6 +81,13 @@ function App() {
       toast.dismiss(loadingToast);
       
       if (response.data.success) {
+        // Guardar la transacción
+        setLastTransaction({
+          hash: response.data.transactionHash,
+          amount: response.data.amount,
+          timestamp: new Date().toISOString()
+        });
+        
         toast.success(
           <div>
             <p className="font-bold">¡Recompensa enviada exitosamente!</p>
@@ -90,10 +98,10 @@ function App() {
               rel="noopener noreferrer"
               className="text-blue-300 hover:text-blue-200 text-xs underline mt-1 block"
             >
-              Ver transacción
+              Ver transacción en Etherscan
             </a>
           </div>,
-          { duration: 6000 }
+          { duration: 8000 }
         );
         
         // Refresh eligibility after successful claim
@@ -182,6 +190,37 @@ function App() {
               'Obtener Recompensa'
             )}
           </button>
+
+          {/* Last Transaction */}
+          {lastTransaction && (
+            <div className="mt-6 p-4 bg-green-500/10 rounded-lg border border-green-500/30">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-500/20 rounded-full mb-2">
+                  <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <p className="text-green-400 font-semibold mb-2">¡Transacción exitosa!</p>
+                <p className="text-gray-300 text-sm mb-3">
+                  {lastTransaction.amount} SepoliaETH enviados
+                </p>
+                <a
+                  href={`https://sepolia.etherscan.io/tx/${lastTransaction.hash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 hover:bg-green-500/30 rounded-lg text-green-300 hover:text-green-200 transition-all text-sm font-medium"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Ver en Etherscan
+                </a>
+                <p className="text-xs text-gray-500 mt-2 font-mono break-all">
+                  {lastTransaction.hash}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Eligibility Status */}
           {hasValidAddress && eligibilityData && (
