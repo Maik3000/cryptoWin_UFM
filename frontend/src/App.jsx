@@ -159,7 +159,7 @@ function App() {
             </div>
           </div>
           <h1 className="text-7xl font-black mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight">
-            Cryptowinufm
+            CryptoWinUFM
           </h1>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-3">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
